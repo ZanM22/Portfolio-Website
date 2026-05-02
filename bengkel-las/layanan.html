@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bengkel Las – Layanan</title>
+  <style>
+    :root {
+      --black: #0f0f0f;
+      --dark: #1a1a1a;
+      --steel: #2c2c2c;
+      --mid: #4a4a4a;
+      --warm: #8b7355;
+      --gold: #c8a96e;
+      --cream: #f5f0e8;
+      --white: #fafaf8;
+      --accent: #d4860a;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Times New Roman', Times, serif;
+      background: var(--white);
+      color: var(--black);
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 18px 60px;
+      background: rgba(15,15,15,0.95);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(200,169,110,0.2);
+    }
+
+    .nav-logo {
+      font-size: 1.4rem; color: var(--gold);
+      letter-spacing: 3px; text-transform: uppercase; font-weight: normal;
+    }
+    .nav-logo span { color: var(--accent); }
+
+    .nav-links { display: flex; gap: 40px; list-style: none; }
+    .nav-links a {
+      color: var(--cream); text-decoration: none;
+      font-size: 0.95rem; letter-spacing: 1.5px; text-transform: uppercase;
+      transition: color 0.3s; position: relative;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: -4px; left: 0;
+      width: 0; height: 1px; background: var(--gold); transition: width 0.3s;
+    }
+    .nav-links a:hover { color: var(--gold); }
+    .nav-links a:hover::after { width: 100%; }
+
+    /* PAGE HEADER */
+    .page-header {
+      padding: 160px 60px 80px;
+      background: var(--black);
+      position: relative; overflow: hidden;
+    }
+
+    .page-header::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: repeating-linear-gradient(
+        90deg, transparent, transparent 80px,
+        rgba(200,169,110,0.03) 81px, rgba(200,169,110,0.03) 82px
+      );
+    }
+
+    .header-glow {
+      position: absolute;
+      width: 500px; height: 300px;
+      background: radial-gradient(ellipse, rgba(212,134,10,0.1) 0%, transparent 70%);
+      left: 50%; top: 50%; transform: translate(-50%,-50%);
+    }
+
+    .page-header-content { position: relative; z-index: 1; max-width: 600px; }
+
+    .page-eyebrow {
+      font-size: 0.8rem; letter-spacing: 5px;
+      text-transform: uppercase; color: var(--gold); margin-bottom: 20px;
+    }
+
+    .page-title {
+      font-size: clamp(2.5rem, 5vw, 4.5rem);
+      font-weight: normal; color: var(--white); line-height: 1.1;
+    }
+
+    .page-title em { font-style: italic; color: var(--gold); display: block; }
+
+    .page-subtitle {
+      margin-top: 24px;
+      font-size: 1.05rem; line-height: 1.9;
+      color: rgba(245,240,232,0.65); max-width: 480px;
+    }
+
+    /* INTRO STRIP */
+    .intro-strip {
+      padding: 60px;
+      background: var(--cream);
+      display: flex; gap: 60px; align-items: center;
+      border-bottom: 2px solid rgba(0,0,0,0.06);
+    }
+
+    .intro-strip p {
+      font-size: 1.1rem; line-height: 2;
+      color: var(--mid); flex: 1;
+    }
+
+    .intro-strip p strong {
+      color: var(--black); font-weight: normal; font-style: italic;
+    }
+
+    .intro-num {
+      font-size: 6rem; color: rgba(200,169,110,0.15);
+      line-height: 1; flex-shrink: 0;
+      font-style: italic;
+    }
+
+    /* SERVICES */
+    .services-section { padding: 100px 60px; background: var(--white); }
+
+    .section-header { margin-bottom: 70px; }
+
+    .section-label {
+      font-size: 0.8rem; letter-spacing: 5px;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-size: clamp(1.8rem, 3vw, 2.8rem);
+      font-weight: normal; color: var(--black);
+    }
+    .section-title em { font-style: italic; color: var(--warm); }
+
+    /* SERVICE CARDS — alternating layout */
+    .service-block {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      margin-bottom: 3px;
+      background: var(--black);
+    }
+
+    .service-block:nth-child(even) { direction: rtl; }
+    .service-block:nth-child(even) > * { direction: ltr; }
+
+    .service-visual {
+      background: var(--steel);
+      min-height: 340px;
+      display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+    }
+
+    .service-visual-inner {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 16px;
+    }
+
+    .service-icon-large {
+      font-size: 4rem;
+      filter: grayscale(0.3);
+    }
+
+    .service-visual-label {
+      font-size: 0.75rem; letter-spacing: 4px;
+      text-transform: uppercase; color: rgba(200,169,110,0.6);
+    }
+
+    /* Unique bg per service */
+    .service-block:nth-child(1) .service-visual {
+      background: linear-gradient(135deg, #1a1a1a 0%, #2a2018 100%);
+    }
+    .service-block:nth-child(2) .service-visual {
+      background: linear-gradient(135deg, #1a1a1a 0%, #18201a 100%);
+    }
+    .service-block:nth-child(3) .service-visual {
+      background: linear-gradient(135deg, #1a1a1a 0%, #1a1a2a 100%);
+    }
+    .service-block:nth-child(4) .service-visual {
+      background: linear-gradient(135deg, #1a1a1a 0%, #201818 100%);
+    }
+    .service-block:nth-child(5) .service-visual {
+      background: linear-gradient(135deg, #1a1a1a 0%, #1e1a18 100%);
+    }
+    .service-block:nth-child(6) .service-visual {
+      background: linear-gradient(135deg, #1a1a1a 0%, #201820 100%);
+    }
+
+    .service-info {
+      padding: 60px 56px;
+      background: var(--white);
+      display: flex; flex-direction: column; justify-content: center;
+      transition: background 0.4s;
+    }
+
+    .service-info:hover { background: var(--cream); }
+
+    .service-num {
+      font-size: 5rem; font-style: italic;
+      color: rgba(200,169,110,0.1); line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .service-name {
+      font-size: 1.6rem; font-weight: normal;
+      color: var(--black); margin-bottom: 16px;
+    }
+
+    .service-name em { font-style: italic; color: var(--warm); }
+
+    .service-desc {
+      font-size: 1rem; line-height: 1.9;
+      color: var(--mid); margin-bottom: 28px;
+    }
+
+    .service-tags { display: flex; flex-wrap: wrap; gap: 10px; }
+
+    .tag {
+      padding: 6px 18px;
+      border: 1px solid rgba(0,0,0,0.15);
+      font-size: 0.8rem; letter-spacing: 1.5px;
+      text-transform: uppercase; color: var(--mid);
+      transition: all 0.3s;
+    }
+
+    .tag:hover {
+      background: var(--black); color: var(--gold);
+      border-color: var(--black);
+    }
+
+    /* WHY CHOOSE */
+    .why-section {
+      padding: 100px 60px;
+      background: var(--black);
+    }
+
+    .why-section .section-label { color: var(--gold); }
+    .why-section .section-title { color: var(--white); }
+    .why-section .section-title em { color: var(--gold); }
+
+    .why-grid {
+      margin-top: 60px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: rgba(200,169,110,0.1);
+    }
+
+    .why-item {
+      padding: 48px 36px;
+      background: var(--dark);
+      transition: background 0.3s;
+    }
+
+    .why-item:hover { background: var(--steel); }
+
+    .why-icon {
+      font-size: 1.8rem; margin-bottom: 20px;
+    }
+
+    .why-title {
+      font-size: 1.1rem; color: var(--cream);
+      margin-bottom: 12px;
+    }
+
+    .why-body {
+      font-size: 0.9rem; line-height: 1.8;
+      color: rgba(245,240,232,0.5);
+    }
+
+    /* CTA */
+    .cta-strip {
+      padding: 80px 60px;
+      background: var(--accent);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap; gap: 32px;
+    }
+
+    .cta-strip-text h3 {
+      font-size: clamp(1.5rem, 2.5vw, 2.2rem);
+      font-weight: normal; color: var(--white); margin-bottom: 8px;
+    }
+
+    .cta-strip-text h3 em { font-style: italic; color: rgba(255,255,255,0.75); }
+
+    .cta-strip-text p {
+      font-size: 1rem; color: rgba(255,255,255,0.8);
+    }
+
+    .btn-white {
+      padding: 16px 44px;
+      background: var(--white);
+      color: var(--accent);
+      text-decoration: none;
+      font-family: 'Times New Roman', serif;
+      font-size: 0.9rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      transition: all 0.3s;
+      display: inline-block;
+      flex-shrink: 0;
+    }
+
+    .btn-white:hover { background: var(--black); color: var(--gold); transform: translateY(-2px); }
+
+    /* FOOTER */
+    footer {
+      padding: 48px 60px;
+      background: #080808;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid rgba(200,169,110,0.1);
+      flex-wrap: wrap; gap: 16px;
+    }
+
+    .footer-logo { font-size: 1.1rem; color: var(--gold); letter-spacing: 3px; text-transform: uppercase; }
+    .footer-copy { font-size: 0.85rem; color: rgba(245,240,232,0.4); letter-spacing: 1px; }
+    .footer-nav { display: flex; gap: 32px; }
+    .footer-nav a {
+      font-size: 0.85rem; letter-spacing: 1.5px; text-transform: uppercase;
+      color: rgba(245,240,232,0.5); text-decoration: none; transition: color 0.3s;
+    }
+    .footer-nav a:hover { color: var(--gold); }
+
+    @media (max-width: 768px) {
+      nav { padding: 16px 24px; }
+      .nav-links { gap: 20px; }
+      .page-header, .intro-strip, .services-section, .why-section, .cta-strip { padding: 60px 24px; }
+      .service-block { grid-template-columns: 1fr; }
+      .service-block:nth-child(even) { direction: ltr; }
+      .service-visual { min-height: 200px; }
+      .why-grid { grid-template-columns: 1fr 1fr; }
+      footer { flex-direction: column; text-align: center; padding: 32px 24px; }
+      .footer-nav { flex-wrap: wrap; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Bengkel <span>Las</span></div>
+  <ul class="nav-links">
+    <li><a href="index.html">Beranda</a></li>
+    <li><a href="layanan.html">Layanan</a></li>
+    <li><a href="order.html">Order</a></li>
+  </ul>
+</nav>
+
+<!-- PAGE HEADER -->
+<section class="page-header">
+  <div class="header-glow"></div>
+  <div class="page-header-content">
+    <p class="page-eyebrow">Apa Yang Kami Tawarkan</p>
+    <h1 class="page-title">
+      Layanan<br>
+      <em>Bengkel Las</em>
+    </h1>
+    <p class="page-subtitle">
+      Solusi lengkap untuk berbagai kebutuhan pengelasan dan fabrikasi besi.
+      Dikerjakan oleh tangan-tangan terampil dengan pengalaman lebih dari 10 tahun.
+    </p>
+  </div>
+</section>
+
+<!-- INTRO -->
+<div class="intro-strip">
+  <div class="intro-num">6</div>
+  <p>
+    Kami menawarkan <strong>enam layanan unggulan</strong> yang mencakup hampir semua
+    kebutuhan pengelasan Anda. Dari perbaikan barang yang rusak hingga fabrikasi
+    konstruksi besi baru — semua kami tangani dengan presisi dan dedikasi penuh.
+  </p>
+  <p>
+    Setiap pekerjaan ditangani secara personal. Kami tidak menggunakan template
+    atau standar produksi massal. <strong>Setiap klien mendapat perhatian penuh.</strong>
+  </p>
+</div>
+
+<!-- SERVICES LIST -->
+<section class="services-section">
+  <div class="section-header">
+    <p class="section-label">Layanan Kami</p>
+    <h2 class="section-title">Keahlian yang Kami <em>Andalkan</em></h2>
+  </div>
+
+  <!-- 1 -->
+  <div class="service-block">
+    <div class="service-visual">
+      <div class="service-visual-inner">
+        <div class="service-icon-large">🔧</div>
+        <div class="service-visual-label">Perbaikan</div>
+      </div>
+    </div>
+    <div class="service-info">
+      <div class="service-num">01</div>
+      <h3 class="service-name">Perbaikan <em>Barang Rusak</em></h3>
+      <p class="service-desc">
+        Kami menerima perbaikan berbagai barang berbahan besi yang mengalami kerusakan —
+        baik patah, retak, bengkok, maupun aus akibat pemakaian jangka panjang. Dengan
+        teknik pengelasan yang tepat, barang Anda akan kembali seperti semula, bahkan
+        lebih kuat dari sebelumnya.
+      </p>
+      <div class="service-tags">
+        <span class="tag">Patah / Retak</span>
+        <span class="tag">Bengkok</span>
+        <span class="tag">Aus / Korosif</span>
+        <span class="tag">Rekonstruksi</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2 -->
+  <div class="service-block">
+    <div class="service-visual">
+      <div class="service-visual-inner">
+        <div class="service-icon-large">🏠</div>
+        <div class="service-visual-label">Pagar</div>
+      </div>
+    </div>
+    <div class="service-info">
+      <div class="service-num">02</div>
+      <h3 class="service-name">Pembuatan <em>Pagar</em></h3>
+      <p class="service-desc">
+        Kami membuat pagar dari berbagai jenis bahan sesuai kebutuhan dan selera Anda.
+        Tersedia pilihan desain minimalis modern, klasik ornamental, hingga industrial.
+        Setiap pagar dirancang kuat, tahan cuaca, dan estetis.
+      </p>
+      <div class="service-tags">
+        <span class="tag">Besi Hollow</span>
+        <span class="tag">Besi Tempa</span>
+        <span class="tag">Stainless</span>
+        <span class="tag">Kombinasi</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3 -->
+  <div class="service-block">
+    <div class="service-visual">
+      <div class="service-visual-inner">
+        <div class="service-icon-large">🏗</div>
+        <div class="service-visual-label">Kanopi</div>
+      </div>
+    </div>
+    <div class="service-info">
+      <div class="service-num">03</div>
+      <h3 class="service-name">Pemasangan <em>Kanopi</em></h3>
+      <p class="service-desc">
+        Kanopi berkualitas untuk carport, teras, halaman, maupun area komersial. Rangka
+        dibuat dari bahan besi pilihan dengan penutup yang dapat disesuaikan — mulai
+        dari polycarbonate, atap spandek, hingga galvalum. Tahan angin dan hujan.
+      </p>
+      <div class="service-tags">
+        <span class="tag">Carport</span>
+        <span class="tag">Teras</span>
+        <span class="tag">Komersial</span>
+        <span class="tag">Custom Desain</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4 -->
+  <div class="service-block">
+    <div class="service-visual">
+      <div class="service-visual-inner">
+        <div class="service-icon-large">🍽</div>
+        <div class="service-visual-label">Stainless</div>
+      </div>
+    </div>
+    <div class="service-info">
+      <div class="service-num">04</div>
+      <h3 class="service-name">Meja <em>Stainless Steel</em></h3>
+      <p class="service-desc">
+        Meja stainless berkualitas tinggi untuk dapur profesional, rumah makan, lab, maupun
+        kebutuhan industri. Tahan karat, mudah dibersihkan, dan kuat menopang beban berat.
+        Dibuat sesuai ukuran dan spesifikasi yang Anda inginkan.
+      </p>
+      <div class="service-tags">
+        <span class="tag">Dapur Industri</span>
+        <span class="tag">Custom Ukuran</span>
+        <span class="tag">Food Grade</span>
+        <span class="tag">Tahan Karat</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5 -->
+  <div class="service-block">
+    <div class="service-visual">
+      <div class="service-visual-inner">
+        <div class="service-icon-large">🏍</div>
+        <div class="service-visual-label">Motor</div>
+      </div>
+    </div>
+    <div class="service-info">
+      <div class="service-num">05</div>
+      <h3 class="service-name">Kerangka <em>Motor Kustom</em></h3>
+      <p class="service-desc">
+        Fabrikasi kerangka motor untuk keperluan modifikasi, chopper, cafe racer, scrambler,
+        dan berbagai konsep kustom lainnya. Kami juga mengerjakan subframe, bracket, dan
+        komponen penopang lainnya dengan presisi tinggi.
+      </p>
+      <div class="service-tags">
+        <span class="tag">Custom Frame</span>
+        <span class="tag">Subframe</span>
+        <span class="tag">Bracket</span>
+        <span class="tag">Modifikasi</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6 -->
+  <div class="service-block">
+    <div class="service-visual">
+      <div class="service-visual-inner">
+        <div class="service-icon-large">⚙</div>
+        <div class="service-visual-label">Mesin</div>
+      </div>
+    </div>
+    <div class="service-info">
+      <div class="service-num">06</div>
+      <h3 class="service-name">Perbaikan <em>Mesin</em></h3>
+      <p class="service-desc">
+        Perbaikan komponen mesin berbahan besi yang mengalami kerusakan struktural —
+        mulai dari blok mesin retak, manifold bocor, hingga konstruksi rangka mesin
+        yang rusak. Kami juga menerima pembuatan part pengganti yang sulit ditemukan
+        di pasaran.
+      </p>
+      <div class="service-tags">
+        <span class="tag">Blok Mesin</span>
+        <span class="tag">Manifold</span>
+        <span class="tag">Part Custom</span>
+        <span class="tag">Rekonstruksi</span>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- WHY -->
+<section class="why-section">
+  <div class="section-header">
+    <p class="section-label">Jaminan Kami</p>
+    <h2 class="section-title">Standar <em>Kualitas Kami</em></h2>
+  </div>
+  <div class="why-grid">
+    <div class="why-item">
+      <div class="why-icon">🔥</div>
+      <div class="why-title">Las Kuat & Rapi</div>
+      <div class="why-body">Hasil las bersih, kuat, tanpa pori-pori yang melemahkan struktur. Standar industri terpenuhi.</div>
+    </div>
+    <div class="why-item">
+      <div class="why-icon">📐</div>
+      <div class="why-title">Ukuran Presisi</div>
+      <div class="why-body">Setiap dimensi diukur dan dikerjakan dengan presisi untuk hasil akhir yang pas dan memuaskan.</div>
+    </div>
+    <div class="why-item">
+      <div class="why-icon">🛡</div>
+      <div class="why-title">Material Pilihan</div>
+      <div class="why-body">Hanya menggunakan bahan baku berkualitas yang sudah teruji daya tahan dan kekuatannya.</div>
+    </div>
+    <div class="why-item">
+      <div class="why-icon">🤝</div>
+      <div class="why-title">Garansi Pekerjaan</div>
+      <div class="why-body">Setiap pekerjaan dilengkapi garansi. Kami bertanggung jawab penuh atas kualitas hasil kerja kami.</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA STRIP -->
+<div class="cta-strip">
+  <div class="cta-strip-text">
+    <h3>Tertarik dengan layanan <em>kami?</em></h3>
+    <p>Langsung buat pesanan atau tanyakan estimasi biaya sekarang.</p>
+  </div>
+  <a href="order.html" class="btn-white">Buat Pesanan</a>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Bengkel Las</div>
+  <nav class="footer-nav">
+    <a href="index.html">Beranda</a>
+    <a href="layanan.html">Layanan</a>
+    <a href="order.html">Order</a>
+  </nav>
+  <p class="footer-copy">© 2024 Bengkel Las. Semua Hak Dilindungi.</p>
+</footer>
+
+</body>
+</html>
