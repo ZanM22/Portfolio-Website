@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bengkel Las – Beranda</title>
+  <style>
+    :root {
+      --black: #0f0f0f;
+      --dark: #1a1a1a;
+      --steel: #2c2c2c;
+      --mid: #4a4a4a;
+      --warm: #8b7355;
+      --gold: #c8a96e;
+      --cream: #f5f0e8;
+      --white: #fafaf8;
+      --accent: #d4860a;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Times New Roman', Times, serif;
+      background: var(--white);
+      color: var(--black);
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 18px 60px;
+      background: rgba(15,15,15,0.95);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(200,169,110,0.2);
+    }
+
+    .nav-logo {
+      font-size: 1.4rem;
+      color: var(--gold);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      font-weight: normal;
+    }
+
+    .nav-logo span { color: var(--accent); }
+
+    .nav-links { display: flex; gap: 40px; list-style: none; }
+
+    .nav-links a {
+      color: var(--cream);
+      text-decoration: none;
+      font-size: 0.95rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      transition: color 0.3s;
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute; bottom: -4px; left: 0;
+      width: 0; height: 1px;
+      background: var(--gold);
+      transition: width 0.3s;
+    }
+
+    .nav-links a:hover { color: var(--gold); }
+    .nav-links a:hover::after { width: 100%; }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column; justify-content: center; align-items: flex-start;
+      padding: 0 60px;
+      position: relative;
+      overflow: hidden;
+      background: var(--black);
+    }
+
+    .hero-bg {
+      position: absolute; inset: 0; z-index: 0;
+      background:
+        repeating-linear-gradient(0deg, transparent, transparent 59px, rgba(200,169,110,0.04) 60px),
+        repeating-linear-gradient(90deg, transparent, transparent 59px, rgba(200,169,110,0.04) 60px);
+    }
+
+    .hero-glow {
+      position: absolute;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(212,134,10,0.12) 0%, transparent 70%);
+      bottom: -100px; right: -100px;
+      z-index: 0;
+    }
+
+    .hero-spark {
+      position: absolute;
+      width: 2px; height: 80px;
+      background: linear-gradient(to bottom, var(--accent), transparent);
+      animation: spark 3s infinite;
+    }
+
+    .hero-spark:nth-child(1) { left: 15%; top: 20%; animation-delay: 0s; }
+    .hero-spark:nth-child(2) { left: 75%; top: 40%; animation-delay: 1.2s; transform: rotate(45deg); }
+    .hero-spark:nth-child(3) { left: 50%; top: 70%; animation-delay: 2.1s; transform: rotate(-30deg); }
+
+    @keyframes spark {
+      0%, 100% { opacity: 0; transform: scaleY(0); }
+      50% { opacity: 1; transform: scaleY(1); }
+    }
+
+    .hero-content { position: relative; z-index: 1; max-width: 700px; }
+
+    .hero-eyebrow {
+      font-size: 0.85rem;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 24px;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.3s forwards;
+    }
+
+    .hero-title {
+      font-size: clamp(3rem, 6vw, 5.5rem);
+      font-weight: normal;
+      line-height: 1.1;
+      color: var(--white);
+      margin-bottom: 8px;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.5s forwards;
+    }
+
+    .hero-title em {
+      font-style: italic;
+      color: var(--gold);
+      display: block;
+    }
+
+    .hero-divider {
+      width: 80px; height: 2px;
+      background: linear-gradient(to right, var(--accent), transparent);
+      margin: 32px 0;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.7s forwards;
+    }
+
+    .hero-desc {
+      font-size: 1.15rem;
+      line-height: 1.9;
+      color: rgba(245,240,232,0.75);
+      max-width: 520px;
+      margin-bottom: 48px;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.9s forwards;
+    }
+
+    .hero-badges {
+      display: flex; gap: 16px; flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.8s 1.1s forwards;
+    }
+
+    .badge {
+      padding: 10px 24px;
+      border: 1px solid rgba(200,169,110,0.4);
+      color: var(--gold);
+      font-size: 0.85rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      transition: all 0.3s;
+      cursor: default;
+    }
+
+    .badge:hover {
+      background: rgba(200,169,110,0.1);
+      border-color: var(--gold);
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ABOUT SECTION */
+    .about {
+      padding: 120px 60px;
+      background: var(--white);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .about-label {
+      font-size: 0.8rem;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 20px;
+    }
+
+    .about-heading {
+      font-size: clamp(2rem, 3.5vw, 3rem);
+      font-weight: normal;
+      line-height: 1.3;
+      color: var(--black);
+      margin-bottom: 28px;
+    }
+
+    .about-heading em { font-style: italic; color: var(--warm); }
+
+    .about-body {
+      font-size: 1.05rem;
+      line-height: 2;
+      color: var(--mid);
+      margin-bottom: 24px;
+    }
+
+    .about-body strong { color: var(--black); font-weight: normal; font-style: italic; }
+
+    .about-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      padding: 40px;
+      background: var(--black);
+      position: relative;
+    }
+
+    .about-stats::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 3px; height: 100%;
+      background: linear-gradient(to bottom, var(--accent), transparent);
+    }
+
+    .stat-num {
+     font-size: 3rem;
+      color: var(--gold);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(245,240,232,0.6);
+    }
+
+    /* VALUES */
+    .values {
+      padding: 100px 60px;
+      background: var(--cream);
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 70px;
+    }
+
+    .section-label {
+      font-size: 0.8rem;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-size: clamp(1.8rem, 3vw, 2.5rem);
+      font-weight: normal;
+      color: var(--black);
+    }
+
+    .section-title em { font-style: italic; color: var(--warm); }
+
+    .values-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      background: rgba(0,0,0,0.08);
+    }
+
+    .value-card {
+      background: var(--white);
+      padding: 50px 40px;
+      transition: all 0.4s;
+      cursor: default;
+    }
+
+    .value-card:hover {
+      background: var(--black);
+      transform: translateY(-6px);
+    }
+
+    .value-card:hover .value-title,
+    .value-card:hover .value-body { color: var(--cream); }
+
+    .value-card:hover .value-icon { border-color: var(--gold); color: var(--gold); }
+
+    .value-icon {
+      width: 56px; height: 56px;
+      border: 1px solid var(--mid);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem;
+      color: var(--mid);
+      margin-bottom: 28px;
+      transition: all 0.4s;
+    }
+
+    .value-title {
+      font-size: 1.2rem;
+      color: var(--black);
+      margin-bottom: 16px;
+      transition: color 0.4s;
+    }
+
+    .value-body {
+      font-size: 0.95rem;
+      line-height: 1.8;
+      color: var(--mid);
+      transition: color 0.4s;
+    }
+
+    /* CTA */
+    .cta-section {
+      padding: 100px 60px;
+      background: var(--black);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-section::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: repeating-linear-gradient(45deg, transparent, transparent 30px, rgba(200,169,110,0.03) 31px, rgba(200,169,110,0.03) 32px);
+    }
+
+    .cta-section * { position: relative; z-index: 1; }
+
+    .cta-title {
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      font-weight: normal;
+      color: var(--white);
+      margin-bottom: 16px;
+    }
+
+    .cta-title em { font-style: italic; color: var(--gold); }
+
+    .cta-sub {
+      font-size: 1.05rem;
+      color: rgba(245,240,232,0.6);
+      margin-bottom: 48px;
+    }
+
+    .cta-buttons { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
+
+    .btn-primary {
+      padding: 16px 44px;
+      background: var(--accent);
+      color: var(--white);
+      text-decoration: none;
+      font-family: 'Times New Roman', serif;
+      font-size: 0.9rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      transition: all 0.3s;
+      display: inline-block;
+    }
+
+    .btn-primary:hover { background: var(--gold); transform: translateY(-2px); }
+
+    .btn-outline {
+      padding: 16px 44px;
+      border: 1px solid rgba(200,169,110,0.5);
+      color: var(--gold);
+      text-decoration: none;
+      font-family: 'Times New Roman', serif;
+      font-size: 0.9rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      transition: all 0.3s;
+      display: inline-block;
+    }
+
+    .btn-outline:hover { background: rgba(200,169,110,0.1); border-color: var(--gold); transform: translateY(-2px); }
+
+    /* FOOTER */
+    footer {
+      padding: 48px 60px;
+      background: #080808;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid rgba(200,169,110,0.1);
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .footer-logo {
+      font-size: 1.1rem;
+      color: var(--gold);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+
+    .footer-copy {
+      font-size: 0.85rem;
+      color: rgba(245,240,232,0.4);
+      letter-spacing: 1px;
+    }
+
+    .footer-nav { display: flex; gap: 32px; }
+
+    .footer-nav a {
+      font-size: 0.85rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: rgba(245,240,232,0.5);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .footer-nav a:hover { color: var(--gold); }
+
+    @media (max-width: 768px) {
+      nav { padding: 16px 24px; }
+      .nav-links { gap: 20px; }
+      .hero, .about, .values, .cta-section { padding: 80px 24px; }
+      .about { grid-template-columns: 1fr; }
+      .values-grid { grid-template-columns: 1fr; }
+      footer { flex-direction: column; text-align: center; padding: 32px 24px; }
+      .footer-nav { flex-wrap: wrap; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Bengkel <span>Las</span></div>
+  <ul class="nav-links">
+    <li><a href="index.html">Beranda</a></li>
+    <li><a href="layanan.html">Layanan</a></li>
+    <li><a href="order.html">Order</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-spark"></div>
+  <div class="hero-spark"></div>
+  <div class="hero-spark"></div>
+
+  <div class="hero-content">
+    <p class="hero-eyebrow">Bengkel Las Profesional</p>
+    <h1 class="hero-title">
+      Kekuatan Besi,<br>
+      <em>Keahlian Tanpa Henti</em>
+    </h1>
+    <div class="hero-divider"></div>
+    <p class="hero-desc">
+      Melayani kebutuhan pengelasan dan fabrikasi besi sejak lebih dari <strong>10 tahun</strong>.
+      Kami hadir untuk memberikan solusi terbaik — dari perbaikan mesin hingga pembuatan berbagai
+      konstruksi besi yang kokoh dan berkualitas tinggi.
+    </p>
+    <div class="hero-badges">
+      <div class="badge">10+ Tahun Pengalaman</div>
+      <div class="badge">Perbaikan Mesin</div>
+      <div class="badge">Fabrikasi Besi</div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about">
+  <div class="about-text">
+    <p class="about-label">Tentang Kami</p>
+    <h2 class="about-heading">
+      Lebih dari Sekedar<br>
+      <em>Tukang Las Biasa</em>
+    </h2>
+    <p class="about-body">
+      Bengkel kami telah berdiri selama <strong>lebih dari satu dekade</strong>, melayani
+      pelanggan dari berbagai kalangan — mulai dari pemilik rumah, bengkel otomotif,
+      hingga industri manufaktur skala menengah.
+    </p>
+    <p class="about-body">
+      Dengan teknisi berpengalaman dan peralatan las modern, kami siap menangani
+      berbagai pekerjaan pengelasan dengan standar kualitas yang tidak pernah kami
+      kompromikan. Kepercayaan pelanggan adalah fondasi bisnis kami.
+    </p>
+  </div>
+  <div class="about-stats">
+    <div>
+      <div class="stat-num">10+</div>
+      <div class="stat-label">Tahun Berdiri</div>
+    </div>
+    <div>
+      <div class="stat-num">500+</div>
+      <div class="stat-label">Proyek Selesai</div>
+    </div>
+    <div>
+      <div class="stat-num">100%</div>
+      <div class="stat-label">Kepuasan Kerja</div>
+    </div>
+    <div>
+      <div class="stat-num">24h</div>
+      <div class="stat-label">Respons Cepat</div>
+    </div>
+  </div>
+</section>
+
+<!-- VALUES -->
+<section class="values">
+  <div class="section-header">
+    <p class="section-label">Keunggulan Kami</p>
+    <h2 class="section-title">Mengapa Memilih <em>Bengkel Kami?</em></h2>
+  </div>
+  <div class="values-grid">
+    <div class="value-card">
+      <div class="value-icon">⚡</div>
+      <h3 class="value-title">Pengerjaan Cepat</h3>
+      <p class="value-body">Kami memahami pentingnya waktu. Setiap pekerjaan dikerjakan dengan efisien tanpa mengorbankan kualitas hasil akhir.</p>
+    </div>
+    <div class="value-card">
+      <div class="value-icon">⚙</div>
+      <h3 class="value-title">Teknisi Berpengalaman</h3>
+      <p class="value-body">Tim kami terdiri dari teknisi las berpengalaman yang terlatih untuk menangani berbagai jenis pekerjaan pengelasan.</p>
+    </div>
+    <div class="value-card">
+      <div class="value-icon">✦</div>
+      <h3 class="value-title">Kualitas Terjamin</h3>
+      <p class="value-body">Setiap hasil pekerjaan melewati quality check ketat sebelum diserahkan kepada pelanggan. Tidak ada kompromi soal kualitas.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <h2 class="cta-title">Siap Memulai <em>Proyek Anda?</em></h2>
+  <p class="cta-sub">Konsultasikan kebutuhan las Anda kepada kami. Gratis tanpa biaya!</p>
+  <div class="cta-buttons">
+    <a href="layanan.html" class="btn-primary">Lihat Layanan</a>
+    <a href="order.html" class="btn-outline">Pesan Sekarang</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Bengkel Las</div>
+  <nav class="footer-nav">
+    <a href="index.html">Beranda</a>
+    <a href="layanan.html">Layanan</a>
+    <a href="order.html">Order</a>
+  </nav>
+  <p class="footer-copy">© 2024 Bengkel Las. Semua Hak Dilindungi.</p>
+</footer>
+
+</body>
+</html>
