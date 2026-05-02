@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bengkel Las – Order & Pembayaran</title>
+  <style>
+    :root {
+      --black: #0f0f0f;
+      --dark: #1a1a1a;
+      --steel: #2c2c2c;
+      --mid: #4a4a4a;
+      --warm: #8b7355;
+      --gold: #c8a96e;
+      --cream: #f5f0e8;
+      --white: #fafaf8;
+      --accent: #d4860a;
+      --green: #25d366;
+      --red: #e53e3e;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Times New Roman', Times, serif;
+      background: var(--white);
+      color: var(--black);
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 18px 60px;
+      background: rgba(15,15,15,0.95);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(200,169,110,0.2);
+    }
+
+    .nav-logo { font-size: 1.4rem; color: var(--gold); letter-spacing: 3px; text-transform: uppercase; font-weight: normal; }
+    .nav-logo span { color: var(--accent); }
+    .nav-links { display: flex; gap: 40px; list-style: none; }
+    .nav-links a { color: var(--cream); text-decoration: none; font-size: 0.95rem; letter-spacing: 1.5px; text-transform: uppercase; transition: color 0.3s; position: relative; }
+    .nav-links a::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 1px; background: var(--gold); transition: width 0.3s; }
+    .nav-links a:hover { color: var(--gold); }
+    .nav-links a:hover::after { width: 100%; }
+
+    /* PAGE HEADER */
+    .page-header {
+      padding: 160px 60px 80px;
+      background: var(--black);
+      position: relative; overflow: hidden;
+    }
+
+    .page-header::before {
+      content: ''; position: absolute; inset: 0;
+      background: repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(200,169,110,0.02) 41px, rgba(200,169,110,0.02) 42px);
+    }
+
+    .page-header-content { position: relative; z-index: 1; }
+
+    .page-eyebrow { font-size: 0.8rem; letter-spacing: 5px; text-transform: uppercase; color: var(--gold); margin-bottom: 20px; }
+
+    .page-title { font-size: clamp(2.5rem, 5vw, 4.5rem); font-weight: normal; color: var(--white); line-height: 1.1; }
+    .page-title em { font-style: italic; color: var(--gold); display: block; }
+
+    .page-subtitle { margin-top: 24px; font-size: 1.05rem; line-height: 1.9; color: rgba(245,240,232,0.65); max-width: 520px; }
+
+    /* MAIN LAYOUT */
+    .order-layout {
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      gap: 0;
+      min-height: 100vh;
+      align-items: start;
+    }
+
+    /* FORM SIDE */
+    .form-side {
+      padding: 80px 60px;
+      background: var(--white);
+    }
+
+    .form-section-title {
+      font-size: 0.8rem; letter-spacing: 5px;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 12px;
+    }
+
+    .form-heading {
+      font-size: 2rem; font-weight: normal; color: var(--black);
+      margin-bottom: 40px; line-height: 1.3;
+    }
+
+    .form-heading em { font-style: italic; color: var(--warm); }
+
+    .form-group {
+      margin-bottom: 28px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.8rem; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--mid);
+      margin-bottom: 10px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 14px 18px;
+      background: transparent;
+      border: 1px solid rgba(0,0,0,0.18);
+      font-family: 'Times New Roman', serif;
+      font-size: 1rem;
+      color: var(--black);
+      transition: border-color 0.3s, background 0.3s;
+      outline: none;
+      appearance: none;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--accent);
+      background: rgba(212,134,10,0.03);
+    }
+
+    textarea { min-height: 130px; resize: vertical; }
+
+    select {
+      cursor: pointer;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%234a4a4a' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 18px center;
+      padding-right: 44px;
+    }
+
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+    /* Submit Buttons */
+    .submit-group {
+      display: flex; flex-direction: column; gap: 14px;
+      margin-top: 40px;
+    }
+
+    .btn-wa {
+      padding: 18px 32px;
+      background: var(--green);
+      color: var(--white);
+      border: none;
+      cursor: pointer;
+      font-family: 'Times New Roman', serif;
+      font-size: 1rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      display: flex; align-items: center; justify-content: center; gap: 12px;
+      transition: all 0.3s;
+    }
+
+    .btn-wa:hover { background: #1ab854; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(37,211,102,0.3); }
+
+    .btn-email {
+      padding: 18px 32px;
+      background: transparent;
+      color: var(--accent);
+      border: 1px solid var(--accent);
+      cursor: pointer;
+      font-family: 'Times New Roman', serif;
+      font-size: 1rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      display: flex; align-items: center; justify-content: center; gap: 12px;
+      transition: all 0.3s;
+    }
+
+    .btn-email:hover { background: var(--accent); color: var(--white); transform: translateY(-2px); }
+
+    .btn-icon { font-size: 1.2rem; }
+
+    .form-note {
+      margin-top: 20px;
+      font-size: 0.85rem; font-style: italic;
+      color: rgba(74,74,74,0.7);
+      line-height: 1.7;
+    }
+
+    /* SIDEBAR */
+    .info-side {
+      background: var(--black);
+      padding: 80px 48px;
+      position: sticky; top: 80px;
+    }
+
+    .info-section { margin-bottom: 56px; }
+
+    .info-label {
+      font-size: 0.75rem; letter-spacing: 4px;
+      text-transform: uppercase; color: var(--gold); margin-bottom: 24px;
+      padding-bottom: 12px; border-bottom: 1px solid rgba(200,169,110,0.2);
+    }
+
+    .contact-item {
+      display: flex; align-items: flex-start; gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .contact-icon {
+      width: 40px; height: 40px;
+      border: 1px solid rgba(200,169,110,0.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem; flex-shrink: 0;
+      transition: all 0.3s;
+    }
+
+    .contact-item:hover .contact-icon {
+      border-color: var(--gold); background: rgba(200,169,110,0.1);
+    }
+
+    .contact-detail { flex: 1; }
+    .contact-type { font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; color: rgba(245,240,232,0.4); margin-bottom: 6px; }
+    .contact-value { font-size: 1rem; color: var(--cream); }
+
+    .contact-link {
+      text-decoration: none;
+      color: var(--cream);
+      transition: color 0.3s;
+      display: block;
+    }
+
+    .contact-link:hover { color: var(--gold); }
+
+    /* Live WA & Email action buttons */
+    .action-btn {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 20px;
+      margin-bottom: 12px;
+      text-decoration: none;
+      transition: all 0.3s;
+      font-size: 0.9rem; letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .action-wa {
+      background: rgba(37,211,102,0.1);
+      border: 1px solid rgba(37,211,102,0.3);
+      color: var(--green);
+    }
+
+    .action-wa:hover {
+      background: rgba(37,211,102,0.2);
+      border-color: var(--green);
+      transform: translateX(4px);
+    }
+
+    .action-email {
+      background: rgba(212,134,10,0.1);
+      border: 1px solid rgba(212,134,10,0.3);
+      color: var(--gold);
+    }
+
+    .action-email:hover {
+      background: rgba(212,134,10,0.2);
+      border-color: var(--gold);
+      transform: translateX(4px);
+    }
+
+    /* PAYMENT */
+    .payment-section {
+      padding: 80px 60px;
+      background: var(--cream);
+    }
+
+    .payment-header { margin-bottom: 56px; }
+
+    .payment-methods {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      background: rgba(0,0,0,0.08);
+      margin-bottom: 48px;
+    }
+
+    .payment-card {
+      background: var(--white);
+      padding: 40px 32px;
+      transition: all 0.3s;
+      cursor: default;
+    }
+
+    .payment-card:hover { background: var(--black); }
+    .payment-card:hover .pm-name,
+    .payment-card:hover .pm-desc { color: var(--cream); }
+    .payment-card:hover .pm-icon { border-color: var(--gold); color: var(--gold); }
+
+    .pm-icon {
+      width: 52px; height: 52px;
+      border: 1px solid rgba(0,0,0,0.15);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; margin-bottom: 20px;
+      transition: all 0.3s;
+    }
+
+    .pm-name { font-size: 1.1rem; color: var(--black); margin-bottom: 10px; transition: color 0.3s; }
+    .pm-desc { font-size: 0.9rem; line-height: 1.7; color: var(--mid); transition: color 0.3s; }
+
+    /* PROCESS */
+    .process-section {
+      padding: 80px 60px;
+      background: var(--white);
+    }
+
+    .process-steps {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0;
+      position: relative;
+      margin-top: 56px;
+    }
+
+    .process-steps::before {
+      content: '';
+      position: absolute;
+      top: 28px; left: 10%; right: 10%;
+      height: 1px;
+      background: linear-gradient(to right, transparent, var(--gold), transparent);
+    }
+
+    .step {
+      display: flex; flex-direction: column; align-items: center;
+      text-align: center; padding: 0 16px;
+    }
+
+    .step-num {
+      width: 56px; height: 56px;
+      background: var(--black);
+      color: var(--gold);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; font-style: italic;
+      margin-bottom: 20px; flex-shrink: 0;
+      position: relative; z-index: 1;
+      border: 2px solid var(--gold);
+    }
+
+    .step-title { font-size: 0.95rem; color: var(--black); margin-bottom: 8px; }
+    .step-desc { font-size: 0.82rem; line-height: 1.7; color: var(--mid); }
+
+    /* SUCCESS */
+    #success-msg {
+      display: none;
+      padding: 20px 28px;
+      background: rgba(37,211,102,0.1);
+      border: 1px solid rgba(37,211,102,0.3);
+      color: #1a8040;
+      font-size: 0.95rem;
+      margin-top: 20px;
+      line-height: 1.7;
+    }
+
+    /* FOOTER */
+    footer {
+      padding: 48px 60px;
+      background: #080808;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid rgba(200,169,110,0.1);
+      flex-wrap: wrap; gap: 16px;
+    }
+
+    .footer-logo { font-size: 1.1rem; color: var(--gold); letter-spacing: 3px; text-transform: uppercase; }
+    .footer-copy { font-size: 0.85rem; color: rgba(245,240,232,0.4); letter-spacing: 1px; }
+    .footer-nav { display: flex; gap: 32px; }
+    .footer-nav a { font-size: 0.85rem; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(245,240,232,0.5); text-decoration: none; transition: color 0.3s; }
+    .footer-nav a:hover { color: var(--gold); }
+
+    @media (max-width: 1024px) {
+      .order-layout { grid-template-columns: 1fr; }
+      .info-side { position: static; }
+      .payment-methods { grid-template-columns: 1fr 1fr; }
+      .process-steps { grid-template-columns: 1fr 1fr; }
+      .process-steps::before { display: none; }
+    }
+
+    @media (max-width: 768px) {
+      nav { padding: 16px 24px; }
+      .nav-links { gap: 20px; }
+      .page-header, .form-side, .info-side, .payment-section, .process-section { padding: 60px 24px; }
+      .form-row { grid-template-columns: 1fr; }
+      .payment-methods { grid-template-columns: 1fr; }
+      .process-steps { grid-template-columns: 1fr; }
+      footer { flex-direction: column; text-align: center; padding: 32px 24px; }
+      .footer-nav { flex-wrap: wrap; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Bengkel <span>Las</span></div>
+  <ul class="nav-links">
+    <li><a href="index.html">Beranda</a></li>
+    <li><a href="layanan.html">Layanan</a></li>
+    <li><a href="order.html">Order</a></li>
+  </ul>
+</nav>
+
+<!-- PAGE HEADER -->
+<section class="page-header">
+  <div class="page-header-content">
+    <p class="page-eyebrow">Pemesanan & Pembayaran</p>
+    <h1 class="page-title">
+      Pesan Layanan<br>
+      <em>Kami Sekarang</em>
+    </h1>
+    <p class="page-subtitle">
+      Isi formulir di bawah atau hubungi kami langsung via WhatsApp.
+      Kami akan segera merespons dan memberikan estimasi biaya terbaik.
+    </p>
+  </div>
+</section>
+
+<!-- ORDER LAYOUT -->
+<div class="order-layout">
+
+  <!-- FORM -->
+  <div class="form-side">
+    <p class="form-section-title">Formulir Pesanan</p>
+    <h2 class="form-heading">Ceritakan Kebutuhan <em>Anda</em></h2>
+
+    <form id="order-form" onsubmit="return false;">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="name">Nama Lengkap</label>
+          <input type="text" id="name" placeholder="Nama Anda" required />
+        </div>
+        <div class="form-group">
+          <label for="phone">Nomor Telepon / WA</label>
+          <input type="tel" id="phone" placeholder="08xxxxxxxxxx" required />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Alamat Email</label>
+        <input type="email" id="email" placeholder="email@anda.com" />
+      </div>
+
+      <div class="form-group">
+        <label for="service">Jenis Layanan</label>
+        <select id="service" required>
+          <option value="">— Pilih Layanan —</option>
+          <option value="Perbaikan Barang Rusak">Perbaikan Barang Rusak</option>
+          <option value="Pembuatan Pagar">Pembuatan Pagar</option>
+          <option value="Pemasangan Kanopi">Pemasangan Kanopi</option>
+          <option value="Meja Stainless Steel">Meja Stainless Steel</option>
+          <option value="Kerangka Motor Kustom">Kerangka Motor Kustom</option>
+          <option value="Perbaikan Mesin">Perbaikan Mesin</option>
+          <option value="Lainnya">Lainnya</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="address">Lokasi / Alamat</label>
+        <input type="text" id="address" placeholder="Kota atau kecamatan Anda" />
+      </div>
+
+      <div class="form-group">
+        <label for="detail">Detail Pekerjaan</label>
+        <textarea id="detail" placeholder="Jelaskan kebutuhan Anda secara detail — ukuran, bahan yang diinginkan, kondisi barang, dll." required></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="budget">Estimasi Anggaran (Opsional)</label>
+        <select id="budget">
+          <option value="">— Pilih Kisaran Anggaran —</option>
+          <option value="Di bawah Rp 500.000">Di bawah Rp 500.000</option>
+          <option value="Rp 500.000 – Rp 1.000.000">Rp 500.000 – Rp 1.000.000</option>
+          <option value="Rp 1.000.000 – Rp 5.000.000">Rp 1.000.000 – Rp 5.000.000</option>
+          <option value="Rp 5.000.000 – Rp 10.000.000">Rp 5.000.000 – Rp 10.000.000</option>
+          <option value="Di atas Rp 10.000.000">Di atas Rp 10.000.000</option>
+        </select>
+      </div>
+
+      <div class="submit-group">
+        <button class="btn-wa" onclick="kirimWA()">
+          <span class="btn-icon">💬</span>
+          Kirim via WhatsApp
+        </button>
+        <button class="btn-email" onclick="kirimEmail()">
+          <span class="btn-icon">✉</span>
+          Kirim via Email
+        </button>
+      </div>
+
+      <div id="success-msg"></div>
+
+      <p class="form-note">
+        * Pesanan via WhatsApp akan membuka aplikasi WA secara otomatis dengan pesan yang sudah terisi.<br>
+        * Via Email akan membuka aplikasi email Anda dengan detail pesanan yang siap dikirim.
+      </p>
+    </form>
+  </div>
+
+  <!-- SIDEBAR INFO -->
+  <div class="info-side">
+    <div class="info-section">
+      <div class="info-label">Hubungi Langsung</div>
+
+      <div class="contact-item">
+        <div class="contact-icon">💬</div>
+        <div class="contact-detail">
+          <div class="contact-type">WhatsApp</div>
+          <a href="https://wa.me/6285161128325" target="_blank" class="contact-link contact-value">
+            0851-6112-8325
+          </a>
+        </div>
+      </div>
+
+      <div class="contact-item">
+        <div class="contact-icon">✉</div>
+        <div class="contact-detail">
+          <div class="contact-type">Email</div>
+          <a href="mailto:zanm84864@gmail.com" class="contact-link contact-value">
+            zanm84864@gmail.com
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-section">
+      <div class="info-label">Aksi Cepat</div>
+      <a href="https://wa.me/6285161128325?text=Halo%2C%20saya%20ingin%20konsultasi%20tentang%20layanan%20bengkel%20las" target="_blank" class="action-btn action-wa">
+        <span>💬</span> Chat WhatsApp Sekarang
+      </a>
+      <a href="mailto:zanm84864@gmail.com?subject=Konsultasi%20Bengkel%20Las&body=Halo%2C%20saya%20ingin%20berkonsultasi%20tentang%20layanan%20bengkel%20las." class="action-btn action-email">
+        <span>✉</span> Kirim Email Langsung
+      </a>
+    </div>
+
+    <div class="info-section">
+      <div class="info-label">Jam Operasional</div>
+      <div style="display:flex; flex-direction:column; gap:12px;">
+        <div style="display:flex; justify-content:space-between;">
+          <span style="color:rgba(245,240,232,0.6); font-size:0.9rem;">Senin – Sabtu</span>
+          <span style="color:var(--gold); font-size:0.9rem;">08.00 – 17.00</span>
+        </div>
+        <div style="display:flex; justify-content:space-between;">
+          <span style="color:rgba(245,240,232,0.6); font-size:0.9rem;">Minggu</span>
+          <span style="color:rgba(245,240,232,0.4); font-size:0.9rem;">Janjian</span>
+        </div>
+        <div style="margin-top:8px; padding:14px 16px; background:rgba(200,169,110,0.08); border:1px solid rgba(200,169,110,0.15);">
+          <p style="font-size:0.85rem; color:rgba(245,240,232,0.6); line-height:1.7; font-style:italic;">
+            "Untuk proyek mendesak di luar jam kerja, silakan hubungi kami terlebih dahulu."
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PAYMENT METHODS -->
+<section class="payment-section">
+  <div class="payment-header">
+    <p class="section-label" style="font-size:0.8rem; letter-spacing:5px; text-transform:uppercase; color:var(--accent); margin-bottom:14px;">Sistem Pembayaran</p>
+    <h2 style="font-size:clamp(1.8rem,3vw,2.5rem); font-weight:normal; color:var(--black);">Metode <em style="font-style:italic; color:var(--warm);">Pembayaran</em></h2>
+  </div>
+
+  <div class="payment-methods">
+    <div class="payment-card">
+      <div class="pm-icon">💵</div>
+      <h3 class="pm-name">Tunai / Cash</h3>
+      <p class="pm-desc">Pembayaran langsung di tempat setelah pekerjaan selesai. Bisa juga dengan uang muka (DP) di awal untuk proyek besar.</p>
+    </div>
+    <div class="payment-card">
+      <div class="pm-icon">📱</div>
+      <h3 class="pm-name">Transfer Bank</h3>
+      <p class="pm-desc">Transfer rekening bank lokal (BCA, Mandiri, BRI, BNI). Konfirmasi via WhatsApp setelah transfer berhasil dilakukan.</p>
+    </div>
+    <div class="payment-card">
+      <div class="pm-icon">🔵</div>
+      <h3 class="pm-name">QRIS / E-Wallet</h3>
+      <p class="pm-desc">Mendukung pembayaran via GoPay, OVO, DANA, ShopeePay, dan semua dompet digital yang mendukung QRIS.</p>
+    </div>
+  </div>
+
+  <div style="padding: 36px 40px; background: var(--black); display:flex; gap:40px; align-items:flex-start; flex-wrap:wrap;">
+    <div style="flex:1; min-width:240px;">
+      <p style="font-size:0.75rem; letter-spacing:3px; text-transform:uppercase; color:var(--gold); margin-bottom:16px;">Kebijakan DP</p>
+      <p style="font-size:0.95rem; line-height:1.9; color:rgba(245,240,232,0.7);">
+        Proyek dengan nilai di atas <strong style="color:var(--gold); font-style:italic;">Rp 1.000.000</strong> dikenakan DP minimal 50% di awal pengerjaan.
+        Pelunasan dilakukan setelah pekerjaan selesai dan telah diperiksa oleh klien.
+      </p>
+    </div>
+    <div style="flex:1; min-width:240px;">
+      <p style="font-size:0.75rem; letter-spacing:3px; text-transform:uppercase; color:var(--gold); margin-bottom:16px;">Garansi Pekerjaan</p>
+      <p style="font-size:0.95rem; line-height:1.9; color:rgba(245,240,232,0.7);">
+        Setiap pekerjaan dilengkapi dengan <strong style="color:var(--gold); font-style:italic;">garansi keretakan las</strong> selama 3 bulan.
+        Apabila terdapat cacat bahan, kami akan memperbaiki tanpa biaya tambahan.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="process-section">
+  <div style="margin-bottom:16px;">
+    <p style="font-size:0.8rem; letter-spacing:5px; text-transform:uppercase; color:var(--accent); margin-bottom:14px;">Alur Kerja</p>
+    <h2 style="font-size:clamp(1.8rem,3vw,2.5rem); font-weight:normal; color:var(--black);">Bagaimana <em style="font-style:italic; color:var(--warm);">Prosesnya?</em></h2>
+  </div>
+
+  <div class="process-steps">
+    <div class="step">
+      <div class="step-num">01</div>
+      <div class="step-title">Hubungi Kami</div>
+      <div class="step-desc">Isi form atau chat langsung via WhatsApp untuk mendapatkan respons cepat.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <div class="step-title">Konsultasi</div>
+      <div class="step-desc">Kami diskusikan kebutuhan, bahan, ukuran, dan estimasi biaya bersama Anda.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <div class="step-title">Konfirmasi & DP</div>
+      <div class="step-desc">Setelah sepakat, pembayaran DP dilakukan dan pekerjaan segera dimulai.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <div class="step-title">Pengerjaan</div>
+      <div class="step-desc">Pekerjaan dikerjakan sesuai jadwal yang disepakati dengan update progres berkala.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">05</div>
+      <div class="step-title">Selesai & Lunas</div>
+      <div class="step-desc">Barang siap diserahkan. Pelunasan dilakukan dan garansi mulai berjalan.</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Bengkel Las</div>
+  <nav class="footer-nav">
+    <a href="index.html">Beranda</a>
+    <a href="layanan.html">Layanan</a>
+    <a href="order.html">Order</a>
+  </nav>
+  <p class="footer-copy">© 2024 Bengkel Las. Semua Hak Dilindungi.</p>
+</footer>
+
+<script>
+  const WA_NUMBER = '6285161128325';
+  const EMAIL_ADDR = 'zanm84864@gmail.com';
+
+  function getFormData() {
+    return {
+      name:    document.getElementById('name').value.trim(),
+      phone:   document.getElementById('phone').value.trim(),
+      email:   document.getElementById('email').value.trim(),
+      service: document.getElementById('service').value,
+      address: document.getElementById('address').value.trim(),
+      detail:  document.getElementById('detail').value.trim(),
+      budget:  document.getElementById('budget').value,
+    };
+  }
+
+  function validateForm(d) {
+    if (!d.name)    { alert('Nama tidak boleh kosong.'); return false; }
+    if (!d.phone)   { alert('Nomor telepon tidak boleh kosong.'); return false; }
+    if (!d.service) { alert('Pilih jenis layanan terlebih dahulu.'); return false; }
+    if (!d.detail)  { alert('Detail pekerjaan tidak boleh kosong.'); return false; }
+    return true;
+  }
+
+  function kirimWA() {
+    const d = getFormData();
+    if (!validateForm(d)) return;
+
+    const msg =
+      `Halo, saya ingin memesan layanan bengkel las.\n\n` +
+      `*Nama:* ${d.name}\n` +
+      `*No. Telepon:* ${d.phone}\n` +
+      (d.email ? `*Email:* ${d.email}\n` : '') +
+      `*Layanan:* ${d.service}\n` +
+      (d.address ? `*Lokasi:* ${d.address}\n` : '') +
+      `*Detail Pekerjaan:*\n${d.detail}\n` +
+      (d.budget ? `*Estimasi Anggaran:* ${d.budget}\n` : '') +
+      `\nMohon informasi estimasi biaya dan waktu pengerjaannya. Terima kasih!`;
+
+    const url = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`;
+    window.open(url, '_blank');
+
+    showSuccess('Membuka WhatsApp dengan pesan yang sudah terisi. Klik Kirim untuk mengirim pesanan Anda.');
+  }
+
+  function kirimEmail() {
+    const d = getFormData();
+    if (!validateForm(d)) return;
+
+    const subject = `Pesanan Bengkel Las – ${d.service} – ${d.name}`;
+    const body =
+      `Halo,\n\nSaya ingin memesan layanan bengkel las dengan detail berikut:\n\n` +
+      `Nama          : ${d.name}\n` +
+      `No. Telepon   : ${d.phone}\n` +
+      (d.email ? `Email         : ${d.email}\n` : '') +
+      `Jenis Layanan : ${d.service}\n` +
+      (d.address ? `Lokasi        : ${d.address}\n` : '') +
+      `\nDetail Pekerjaan:\n${d.detail}\n` +
+      (d.budget ? `\nEstimasi Anggaran: ${d.budget}\n` : '') +
+      `\nMohon informasi estimasi biaya dan waktu pengerjaan.\n\nTerima kasih,\n${d.name}`;
+
+    const mailto = `mailto:${EMAIL_ADDR}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.location.href = mailto;
+
+    showSuccess('Membuka aplikasi email Anda. Pastikan untuk mengklik "Kirim" setelah memeriksa pesan.');
+  }
+
+  function showSuccess(msg) {
+    const el = document.getElementById('success-msg');
+    el.textContent = '✓ ' + msg;
+    el.style.display = 'block';
+    setTimeout(() => { el.style.display = 'none'; }, 8000);
+  }
+</script>
+
+</body>
+</html>
